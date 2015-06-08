@@ -109,12 +109,12 @@ void reshape(GLsizei w, GLsizei h)												//width || heigth
 
 		if (w <= h) {															//glortho - rzutowanie prostokatne | glfrustum - rzutpwanie perspektywiczne
 																				//we frustum z min to odleglosc od srodka rzutowania do plyty ekranu, z max to koniec sceny
-			//glFrustum(-2.25, 2.25, -2.25*h/w, 2.25*h/w, 1.0, 10.0);
-            glFrustum (-1.0, 1.0, -1.0*(h / w), 1.0*(h / w), 1.0, 10.0);
+			glFrustum(-2.25, 2.25, -2.25*h/w, 2.25*h/w, 1.0, 10.0);
+            //glFrustum (-1.0, 1.0, -1.0*(h / w), 1.0*(h / w), 1.0, 10.0);
 		}
 		else {
-			//glFrustum(-2.25*w/h, 2.25*w/h, -2.25, 2.25, 1.0, 10.0);
-            glFrustum (-1.0*(w / h), 1.0*(w / h), -1.0, 1.0, 1.0, 10.0);
+			glFrustum(-2.25*w/h, 2.25*w/h, -2.25, 2.25, 1.0, 10.0);
+            //glFrustum (-1.0*(w / h), 1.0*(w / h), -1.0, 1.0, 1.0, 10.0);
 		}
 
 		glTranslatef(0.0, 0.0, -3.0);
