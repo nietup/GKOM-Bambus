@@ -1,15 +1,20 @@
 /*
- * GKOM Bamboo project
- */
+* GKOM Bamboo project
+*/
 
 #include <windows.h>
 #include <GL/gl.h>
 #include "glut.h"
 #include <iostream>
-#include <vector>
 #include "Entity.h"
 #include "BambooStick.h"
+#include "Floor.h"
 
+int width;
+int height;
+double lasttime;
+double timediff;
+double fps;
 std::vector<Entity *> * entities;
 
 void init() {
@@ -33,66 +38,54 @@ void init() {
     glEnable(GL_DEPTH_TEST);
 
     entities = new std::vector<Entity *>();
-    Entity * bs;
-    bs = new BambooStick(0, 0, -30);
-    entities->push_back(bs);
-    bs = new BambooStick(-10, 0, -30);
-    entities->push_back(bs);
+    GLUquadric * qobj = gluNewQuadric();
+    Entity * e;
+    e = new BambooStick(qobj, 10, 0, -30);
+    entities->push_back(e);
+    e = new BambooStick(qobj, -10, 0, -30);
+    entities->push_back(e);
+    e = new Floor(0.f, 0.f, -30.f, 10.f, 10.f);
+    entities->push_back(e);
 }
 
 void displayObjects() {
-    /*
-    wspolzedne:
-    0 0 w srodku okna
-    x ->
-    y ^
-    */
 
-    GLfloat torus_diffuse[] = {0.7, 0.7, 0.0, 1.0};
-    GLfloat cube_diffuse[] = {0.0, 0.7, 0.7, 1.0};
-    GLfloat sphere_diffuse[] = {0.7, 0.0, 0.7, 1.0};
-    GLfloat octa_diffuse[] = {0.7, 0.4, 0.4, 1.0};
-
-    //calosc
     glPushMatrix();
+    glRotatef(20.f, 1.f, 0.f, 0.f);
+        for (int i = 0; i < entities->size(); i++)
+            (*entities)[i]->render();
 
-    //plane
-    glPushMatrix();
-
-    for (int i = 0; i < entities->size(); i++)
-        (*entities)[i]->render();
-
-    //fin plane
-    glPopMatrix();
-
-    //fin calosc
     glPopMatrix();
 }
 
-void display() {
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
+void render() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     //wypelnienie bufora domyslnymi wartosciami
+    glLoadIdentity();
+    gluLookAt(0.0f, 0.0f, 10.0f,
+              0.0f, 0.0f, 0.0f,
+              0.0f, 1.0f, 0.0f);
 
-    glMatrixMode(GL_MODELVIEW);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		//wypelnienie bufora domyslnymi wartosciami
     displayObjects();
 
-    glFlush();													//wywalenie wszystkich oczekujacych wejsc
+    glFlush();                                              //wywalenie wszystkich oczekujacych wejsc
     glutSwapBuffers();
 
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
+    timediff = GetTickCount() - lasttime;
+    if (timediff < 16) {
+        Sleep(16 - timediff);
+    }
+    fps = (timediff / 16) * 60;
+    lasttime += timediff;
 }
 
-void reshape(GLsizei w, GLsizei h)												//width || heigth
+void reshape(GLsizei w, GLsizei h)                              //width || heigth
 {
     if (h > 0 && w > 0) {
-        int width = w;
-        int height = h;
-        glViewport(0, 0, (GLsizei)width, (GLsizei)height);
+        width = w;
+        height = h;
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
+        glViewport(0, 0, (GLsizei)width, (GLsizei)height);
         gluPerspective(60, (GLfloat)width / (GLfloat)height, 0.1, 10000.0);
         glMatrixMode(GL_MODELVIEW);
     }
@@ -101,15 +94,17 @@ void reshape(GLsizei w, GLsizei h)												//width || heigth
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
 
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);		//pojedyncze buforowanie - single, double; depth - zbufor
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);      //pojedyncze buforowanie - single, double; depth - zbufor
 
     glutInitWindowPosition(0, 0);
+    width = 1024;
+    height = 512;
     glutInitWindowSize(1024, 512);
 
     glutCreateWindow("GKOM: Bamboo Ulimate Elite");
 
-    glutIdleFunc(display);
-    glutDisplayFunc(display);
+    glutIdleFunc(render);
+    glutDisplayFunc(render);
     glutReshapeFunc(reshape);
 
     init();
