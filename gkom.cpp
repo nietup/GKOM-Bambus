@@ -16,6 +16,14 @@ double lasttime;
 double timediff;
 double fps;
 std::vector<Entity *> * entities;
+struct Position {
+    float x;
+    float y;
+    float z;
+    float lx;
+    float lz;
+    float angle;
+} cameraPosition;
 
 void init() {
     GLfloat mat_ambient[] = {1.0, 1.0, 1.0, 1.0};			//mat - wspolczynniki odbicia
@@ -30,6 +38,7 @@ void init() {
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lm_ambient);
 
     glShadeModel(GL_SMOOTH);
+
 
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -46,14 +55,17 @@ void init() {
     entities->push_back(e);
     e = new Floor(0.f, 0.f, -30.f, 10.f, 10.f);
     entities->push_back(e);
+    cameraPosition.z = 10.f;
+    cameraPosition.y = cameraPosition.x = cameraPosition.lx = cameraPosition.angle = 0;
+    cameraPosition.lz = -10.f;
 }
 
 void displayObjects() {
 
     glPushMatrix();
-    glRotatef(20.f, 1.f, 0.f, 0.f);
-        for (int i = 0; i < entities->size(); i++)
-            (*entities)[i]->render();
+
+    for (int i = 0; i < entities->size(); i++)
+        (*entities)[i]->render();
 
     glPopMatrix();
 }
@@ -61,8 +73,9 @@ void displayObjects() {
 void render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     //wypelnienie bufora domyslnymi wartosciami
     glLoadIdentity();
-    gluLookAt(0.0f, 0.0f, 10.0f,
-              0.0f, 0.0f, 0.0f,
+
+    gluLookAt(cameraPosition.x, 1.0f, cameraPosition.z,
+              cameraPosition.x + cameraPosition.lx, 1.0f, cameraPosition.z + cameraPosition.lz,
               0.0f, 1.0f, 0.0f);
 
     displayObjects();
@@ -91,6 +104,37 @@ void reshape(GLsizei w, GLsizei h)                              //width || heigt
     }
 }
 
+void processNormalKeys(unsigned char key, int x, int y) {
+
+    if (key == 27)              //escape
+        exit(0);
+}
+
+void processSpecialKeys(int key, int xx, int yy) {
+
+    float fraction = 0.5f;
+
+    if (key == GLUT_KEY_LEFT) {
+        cameraPosition.angle -= 0.01f;
+        cameraPosition.lx = sin(cameraPosition.angle);
+        cameraPosition.lz = -cos(cameraPosition.angle);
+    }
+    if (key == GLUT_KEY_RIGHT) {
+        cameraPosition.angle += 0.01f;
+        cameraPosition.lx = sin(cameraPosition.angle);
+        cameraPosition.lz = -cos(cameraPosition.angle);
+    }
+    if (key == GLUT_KEY_UP) {
+        cameraPosition.x += cameraPosition.lx * fraction;
+        cameraPosition.z += cameraPosition.lz * fraction;
+    }
+    if (key == GLUT_KEY_DOWN) {
+        cameraPosition.x -= cameraPosition.lx * fraction;
+        cameraPosition.z -= cameraPosition.lz * fraction;
+    }
+
+}
+
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
 
@@ -106,6 +150,11 @@ int main(int argc, char** argv) {
     glutIdleFunc(render);
     glutDisplayFunc(render);
     glutReshapeFunc(reshape);
+    glutKeyboardFunc(processNormalKeys);
+    glutSpecialFunc(processSpecialKeys);
+
+    // OpenGL init
+    glEnable(GL_DEPTH_TEST);
 
     init();
 
