@@ -10,16 +10,19 @@
 #include "BambooStick.h"
 #include "Floor.h"
 #include "Camera.h"
+#include "Map.h"
 
 int width;
 int height;
 double lasttime;
 double timediff;
 double fps;
-std::vector<Entity *> * entities;
 Camera * camera;
+Map * map;
 
 void init() {
+    srand(time(NULL));
+
     GLfloat mat_ambient[] = {1.0, 1.0, 1.0, 1.0};			//mat - wspolczynniki odbicia
     GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
     GLfloat light_position[] = {0.0, 0.0, 10.0, 1.0};
@@ -40,24 +43,14 @@ void init() {
     glDepthFunc(GL_LESS);
     glEnable(GL_DEPTH_TEST);
 
-    entities = new std::vector<Entity *>();
     camera = new Camera();
-    GLUquadric * qobj = gluNewQuadric();
-    Entity * e;
-    e = new BambooStick(qobj, 10, 0, -30);
-    entities->push_back(e);
-    e = new BambooStick(qobj, -10, 0, -30);
-    entities->push_back(e);
-    e = new Floor(0.f, 0.f, -30.f, 10.f, 10.f);
-    entities->push_back(e);
+    map = new Map();
 }
 
 void displayObjects() {
-
     glPushMatrix();
 
-    for (int i = 0; i < entities->size(); i++)
-        (*entities)[i]->render();
+    map->render();
 
     glPopMatrix();
 }

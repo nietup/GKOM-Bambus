@@ -1,9 +1,10 @@
 #include "BambooStick.h"
 
+const int BambooStick::leafness = 3;
+const float BambooStick::botTopFraction = 1.2f;
+const float BambooStick::botHeightFraction = 0.2f;
+
 BambooStick::BambooStick() {
-    position.x = 30;
-    position.y = 30;
-    position.z = 100;
 }
 
 BambooStick::BambooStick(GLUquadric * pQobj, float x, float y, float z) {
@@ -13,66 +14,48 @@ BambooStick::BambooStick(GLUquadric * pQobj, float x, float y, float z) {
     qobj = pQobj;
     segments = new std::vector<Segment *>();
 
+    baseSegmentHeight = (float)(rand() % 5 + 3);
     generate();
 }
 
-
 BambooStick::~BambooStick() {
+    segments->clear();
+    delete segments;
 }
 
-
 void BambooStick::render() {
-
-    //glPushMatrix();
-    ////qobj = gluNewQuadric();
-    //gluQuadricNormals(qobj, GLU_SMOOTH);
-    //glTranslatef(position.x, position.y, position.z);
-    //glRotatef(99.f, 1.f, 0.f, 0.f);
-    //gluCylinder(qobj, 2.0, 1.0, 10.0, 9, 1);
-    //glPopMatrix();
-
-    //glPushMatrix();
-    //// qobj = gluNewQuadric();
-    //gluQuadricNormals(qobj, GLU_SMOOTH);
-    //glTranslatef(position.x, position.y + 5.f, position.z + 0.5f);
-    //glRotatef(99.f, 1.f, 0.f, 0.f);
-    //gluCylinder(qobj, 2.0, 1.0, 5.0, 9, 1);
-    //glPopMatrix();
-
     float height = 0;
     for (int i = 0; i < segments->size(); i++) {
         glPushMatrix();
         gluQuadricNormals(qobj, GLU_SMOOTH);
-        glTranslatef(position.x,
-                     position.y + getSegment(i)->height + height,
-                     position.z + 0.5f*getSegment(i)->botRadius);
+        glTranslatef(position.x, position.y + getSegment(i)->height + height, position.z);
         glRotatef(90.f, 1.f, 0.f, 0.f);
         gluCylinder(qobj, getSegment(i)->topRadius, getSegment(i)->botRadius, getSegment(i)->height, 9, 1);
         glPopMatrix();
-        height += getSegment(i)->height/2.f;
+        height += getSegment(i)->height;
     }
-
-
 }
 
 void BambooStick::generate() {
+    int segmentsNo = rand() % 5 + 3;
+    for (int i = 0; i < segmentsNo; i++)
+        segments->push_back(generateSegment());
+}
+
+BambooStick::Segment * BambooStick::generateSegment() {
     Segment * s = new Segment();
-    s->botRadius = 1.f;
-    s->topRadius = 2.f;
-    s->height = 5.f;
-    segments->push_back(s);
+    float hi = baseSegmentHeight + (baseSegmentHeight*0.35f);
+    float lo = baseSegmentHeight - (baseSegmentHeight*0.35f);
+    s->height = lo + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (hi - lo)));
+    s->botRadius = baseSegmentHeight * botHeightFraction;
+    s->topRadius = s->botRadius * botTopFraction;
 
-    s = new Segment();
-    s->botRadius = 1.f;
-    s->topRadius = 2.f;
-    s->height = 3.f;
-    segments->push_back(s);
+    if (!(rand() % leafness))
+        s->leaf = true;
+    else
+        s->leaf = false;
 
-    s = new Segment();
-    s->botRadius = 1.f;
-    s->topRadius = 2.f;
-    s->height = 4.f;
-    segments->push_back(s);
+    return s;
 }
 
 BambooStick::Segment * BambooStick::getSegment(int i) {

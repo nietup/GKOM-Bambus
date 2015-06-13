@@ -46,11 +46,8 @@ void Camera::computeDirVertical() {
 }
 
 void Camera::refresh() {
-    //if (position.deltaMove != 0)
         computePos();
-    //if (position.deltaAngle != 0)
         computeDir();
-    //if (position.deltaAngleVertical != 0)
         computeDirVertical();
 
     gluLookAt(position.x, position.y, position.z,
@@ -62,10 +59,10 @@ void Camera::update(Action a, int key) {
     if (a == NORMAL_DOWN) {
         switch (key) {
             case 'w':
-                position.deltaMove = 1.8f;
+                position.deltaMove = 2.f;
                 break;
             case 's':
-                position.deltaMove = -0.5f;
+                position.deltaMove = -2.f;
                 break;
         }
     }
@@ -80,10 +77,10 @@ void Camera::update(Action a, int key) {
     if (a == ARROW_DOWN) {
         switch (key) {
             case GLUT_KEY_LEFT:
-                position.deltaAngle = -0.01f;
+                position.deltaAngle = -0.02f;
                 break;
             case GLUT_KEY_RIGHT:
-                position.deltaAngle = 0.01f;
+                position.deltaAngle = 0.02f;
                 break;
             case GLUT_KEY_UP:
                 position.deltaAngleVertical = 0.01f;
