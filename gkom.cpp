@@ -9,6 +9,7 @@
 #include "Entity.h"
 #include "BambooStick.h"
 #include "Floor.h"
+#include "Camera.h"
 
 int width;
 int height;
@@ -16,19 +17,7 @@ double lasttime;
 double timediff;
 double fps;
 std::vector<Entity *> * entities;
-struct Position {
-    float x;
-    float y;
-    float z;
-    float lx;
-    float ly;
-    float lz;
-    float angle;
-    float angleVertical;
-    float deltaAngle;
-    float deltaAngleVertical;
-    float deltaMove;
-} cameraPosition;
+Camera * camera;
 
 void init() {
     GLfloat mat_ambient[] = {1.0, 1.0, 1.0, 1.0};			//mat - wspolczynniki odbicia
@@ -52,6 +41,7 @@ void init() {
     glEnable(GL_DEPTH_TEST);
 
     entities = new std::vector<Entity *>();
+    camera = new Camera();
     GLUquadric * qobj = gluNewQuadric();
     Entity * e;
     e = new BambooStick(qobj, 10, 0, -30);
@@ -60,10 +50,6 @@ void init() {
     entities->push_back(e);
     e = new Floor(0.f, 0.f, -30.f, 10.f, 10.f);
     entities->push_back(e);
-    cameraPosition.z = 10.f;
-    cameraPosition.y = 1.f;
-    cameraPosition.x = cameraPosition.lx = cameraPosition.angleVertical = cameraPosition.ly = cameraPosition.angle = cameraPosition.deltaAngle = cameraPosition.deltaAngleVertical = cameraPosition.deltaMove = 0;
-    cameraPosition.lz = -10.f;
 }
 
 void displayObjects() {
@@ -76,55 +62,11 @@ void displayObjects() {
     glPopMatrix();
 }
 
-void computePos(float deltaMove) {
-    cameraPosition.x += deltaMove * cameraPosition.lx * 0.1f;
-    cameraPosition.y += deltaMove * cameraPosition.ly * 0.1f;
-    cameraPosition.z += deltaMove * cameraPosition.lz * 0.1f;
-}
-
-void computeDir(float deltaAngle) {
-    cameraPosition.angle += deltaAngle;
-    cameraPosition.lx = sin(cameraPosition.angle);
-    cameraPosition.lz = -cos(cameraPosition.angle);
-}
-
-void computeDirVertical(float deltaAngle) {
-    if (deltaAngle >= 0) {
-        if (cameraPosition.angleVertical < 3.14f / 2.f) {
-            cameraPosition.angleVertical += deltaAngle;
-            cameraPosition.ly = 2 * sin(cameraPosition.angleVertical);
-        }
-        else {
-            cameraPosition.ly = 5.f;
-        }
-    }
-    else {
-        if (cameraPosition.angleVertical > -3.14f / 2.f) {
-            cameraPosition.angleVertical += deltaAngle;
-            cameraPosition.ly = 2 * sin(cameraPosition.angleVertical);
-        }
-        else {
-            cameraPosition.ly = -5.f;
-        }
-    }
-}
-
 void render() {
-
-    if (cameraPosition.deltaMove)
-        computePos(cameraPosition.deltaMove);
-    if (cameraPosition.deltaAngle)
-        computeDir(cameraPosition.deltaAngle);
-    if (cameraPosition.deltaAngleVertical)
-        computeDirVertical(cameraPosition.deltaAngleVertical);
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     //wypelnienie bufora domyslnymi wartosciami
     glLoadIdentity();
 
-    gluLookAt(cameraPosition.x, cameraPosition.y, cameraPosition.z,
-              cameraPosition.x + cameraPosition.lx, cameraPosition.y + cameraPosition.ly, cameraPosition.z + cameraPosition.lz,
-              0.0f, 1.0f, 0.0f);
-
+    camera->refresh();
     displayObjects();
 
     glFlush();                                              //wywalenie wszystkich oczekujacych wejsc
@@ -152,59 +94,23 @@ void reshape(GLsizei w, GLsizei h)                              //width || heigt
 }
 
 void pressNormalKey(unsigned char key, int x, int y) {
-
     if (key == 27)              //escape
         exit(0);
 
-    switch (key) {
-        case 'w':
-            cameraPosition.deltaMove = 1.8f;
-            break;
-        case 's':
-            cameraPosition.deltaMove = -0.5f;
-            break;
-    }
+    camera->update(Camera::NORMAL_DOWN, key);
 }
 
 void releaseNormalKey(unsigned char key, int x, int y) {
-    switch (key) {
-        case 'w':
-        case 's':
-            cameraPosition.deltaMove = 0;
-            break;
-    }
+    camera->update(Camera::NORMAL_UP, key);
 }
 
 void pressKey(int key, int xx, int yy) {
-
-    switch (key) {
-        case GLUT_KEY_LEFT:
-            cameraPosition.deltaAngle = -0.01f;
-            break;
-        case GLUT_KEY_RIGHT:
-            cameraPosition.deltaAngle = 0.01f;
-            break;
-        case GLUT_KEY_UP:
-            cameraPosition.deltaAngleVertical = 0.01f;
-            break;
-        case GLUT_KEY_DOWN:
-            cameraPosition.deltaAngleVertical = -0.01f;
-            break;
-    }
+    camera->update(Camera::ARROW_DOWN, key);
 }
 
 void releaseKey(int key, int x, int y) {
+    camera->update(Camera::ARROW_UP, key);
 
-    switch (key) {
-        case GLUT_KEY_LEFT:
-        case GLUT_KEY_RIGHT:
-            cameraPosition.deltaAngle = 0.0f;
-            break;
-        case GLUT_KEY_UP:
-        case GLUT_KEY_DOWN:
-            cameraPosition.deltaAngleVertical = 0.0f;
-            break;
-    }
 }
 
 int main(int argc, char** argv) {
