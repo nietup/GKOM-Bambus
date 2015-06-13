@@ -37,7 +37,16 @@ void BambooStick::render() {
 }
 
 void BambooStick::generate() {
-    int segmentsNo = rand() % 5 + 3;
+    int segmentsNo;
+    std::default_random_engine generator;
+    std::normal_distribution<float> distribution(2.0, 0.75);
+    
+    float number = distribution(generator);
+    if ((number >= 0.0) && (number < 4.0))
+        segmentsNo = (int)number + 3;
+    else 
+        segmentsNo = 5;
+
     for (int i = 0; i < segmentsNo; i++)
         segments->push_back(generateSegment());
 }
