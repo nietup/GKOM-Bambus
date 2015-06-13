@@ -1,7 +1,7 @@
 #include "Map.h"
 
 
-Map::Map() {
+Map::Map(std::default_random_engine * generator) {
     entities = new std::vector<Entity *>();
 
     qobj = gluNewQuadric();
@@ -12,9 +12,9 @@ Map::Map() {
     for (int x = -5; x < 5; x++) {
         for (int z = -8; z < 2; z++) {
             if ((z + 8) % 2)
-                e = new BambooStick(qobj, 10 * x + 5, 0, 10 * z);
+                e = new BambooStick(qobj, generator, 10 * x + 5, 0, 10 * z);
             else
-                e = new BambooStick(qobj, 10 * x, 0, 10 * z);
+                e = new BambooStick(qobj, generator,  10 * x, 0, 10 * z);
 
             entities->push_back(e);
         }

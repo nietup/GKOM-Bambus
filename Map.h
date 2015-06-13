@@ -8,7 +8,7 @@ private:
     std::vector<Entity *> * entities;
     GLUquadric * qobj;
 public:
-    Map();
+    Map(std::default_random_engine * generator);
     ~Map();
 
     void render();

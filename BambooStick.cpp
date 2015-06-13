@@ -1,5 +1,5 @@
 #include "BambooStick.h"
-
+#include <iostream>
 const int BambooStick::leafness = 3;
 const float BambooStick::botTopFraction = 1.2f;
 const float BambooStick::botHeightFraction = 0.2f;
@@ -7,15 +7,14 @@ const float BambooStick::botHeightFraction = 0.2f;
 BambooStick::BambooStick() {
 }
 
-BambooStick::BambooStick(GLUquadric * pQobj, float x, float y, float z) {
+BambooStick::BambooStick(GLUquadric * pQobj, std::default_random_engine * generator, float x, float y, float z) {
     position.x = x;
     position.y = y;
     position.z = z;
     qobj = pQobj;
     segments = new std::vector<Segment *>();
 
-    baseSegmentHeight = (float)(rand() % 5 + 3);
-    generate();
+    generate(generator);
 }
 
 BambooStick::~BambooStick() {
@@ -36,16 +35,25 @@ void BambooStick::render() {
     }
 }
 
-void BambooStick::generate() {
+void BambooStick::generate(std::default_random_engine * generator) {
+    std::normal_distribution<float> heightDistribution(3.0, 0.8);
+
+    baseSegmentHeight = heightDistribution(*generator) + 3.f;
+    if (baseSegmentHeight <= 0.0)
+        baseSegmentHeight = 1.f;
+
     int segmentsNo;
-    std::default_random_engine generator;
-    std::normal_distribution<float> distribution(2.0, 0.75);
-    
-    float number = distribution(generator);
-    if ((number >= 0.0) && (number < 4.0))
-        segmentsNo = (int)number + 3;
-    else 
-        segmentsNo = 5;
+    std::normal_distribution<float> segmentsDistribution(2.0, 0.75);
+
+    float number = segmentsDistribution(*generator);
+
+    segmentsNo = (int)number + 3;
+    if (segmentsNo <= 0)
+        segmentsNo = 1;
+
+
+    if (segmentsNo != 5)
+        std::cout << "FEARFEAR";
 
     for (int i = 0; i < segmentsNo; i++)
         segments->push_back(generateSegment());

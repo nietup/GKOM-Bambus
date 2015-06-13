@@ -21,12 +21,12 @@ private:
     GLUquadricObj *qobj;
     std::vector<Segment *> * segments;
 
-    void generate();
+    void generate(std::default_random_engine * generator);
     Segment * generateSegment();
 
 public:
     BambooStick();
-    BambooStick(GLUquadric * q, float x, float y, float z);
+    BambooStick(GLUquadric * q, std::default_random_engine * generator, float x, float y, float z);
     ~BambooStick();
 
     void render();
