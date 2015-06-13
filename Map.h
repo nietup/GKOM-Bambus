@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "BambooStick.h"
 #include "Floor.h"
+#include "Leaf.h"
 
 class Map {
 private:

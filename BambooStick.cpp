@@ -1,5 +1,5 @@
 #include "BambooStick.h"
-#include <iostream>
+
 const int BambooStick::leafness = 3;
 const float BambooStick::botTopFraction = 1.2f;
 const float BambooStick::botHeightFraction = 0.2f;
@@ -26,17 +26,22 @@ void BambooStick::render() {
     float height = 0;
     for (int i = 0; i < segments->size(); i++) {
         glPushMatrix();
+        glColor3f(139.f / 255.f, 115.f / 255.f, 85.f / 255.f);
         gluQuadricNormals(qobj, GLU_SMOOTH);
         glTranslatef(position.x, position.y + getSegment(i)->height + height, position.z);
         glRotatef(90.f, 1.f, 0.f, 0.f);
         gluCylinder(qobj, getSegment(i)->topRadius, getSegment(i)->botRadius, getSegment(i)->height, 9, 1);
         glPopMatrix();
+
+        if (getSegment(i)->hasLeaf)
+            getSegment(i)->leaf->render();
+
         height += getSegment(i)->height;
     }
 }
 
 void BambooStick::generate(std::default_random_engine * generator) {
-    std::normal_distribution<float> heightDistribution(3.0, 0.8);
+    std::normal_distribution<float> heightDistribution(3.0, 0.85);
 
     baseSegmentHeight = heightDistribution(*generator) + 3.f;
     if (baseSegmentHeight <= 0.0)
@@ -51,15 +56,14 @@ void BambooStick::generate(std::default_random_engine * generator) {
     if (segmentsNo <= 0)
         segmentsNo = 1;
 
-
-    if (segmentsNo != 5)
-        std::cout << "FEARFEAR";
-
-    for (int i = 0; i < segmentsNo; i++)
-        segments->push_back(generateSegment());
+    float h = 0;
+    for (int i = 0; i < segmentsNo; i++) {
+        segments->push_back(generateSegment(h));
+        h += getSegment(i)->height;
+    }
 }
 
-BambooStick::Segment * BambooStick::generateSegment() {
+BambooStick::Segment * BambooStick::generateSegment(float y) {
     Segment * s = new Segment();
     float hi = baseSegmentHeight + (baseSegmentHeight*0.35f);
     float lo = baseSegmentHeight - (baseSegmentHeight*0.35f);
@@ -67,10 +71,12 @@ BambooStick::Segment * BambooStick::generateSegment() {
     s->botRadius = baseSegmentHeight * botHeightFraction;
     s->topRadius = s->botRadius * botTopFraction;
 
-    if (!(rand() % leafness))
-        s->leaf = true;
+    if (!(rand() % leafness)) {
+        s->hasLeaf = true;
+        s->leaf = new Leaf(s->height, position.x, y, position.z, s->botRadius, s->topRadius);
+    }
     else
-        s->leaf = false;
+        s->hasLeaf = false;
 
     return s;
 }

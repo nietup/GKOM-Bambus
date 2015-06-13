@@ -6,6 +6,7 @@ Map::Map(std::default_random_engine * generator) {
 
     qobj = gluNewQuadric();
     Entity * e;
+
     e = new Floor(-2.f, 0.f, -30.f, 100.f, 100.f);
     entities->push_back(e);
 

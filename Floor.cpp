@@ -12,10 +12,13 @@ Floor::~Floor() {
 }
 
 void Floor::render() {
+    glPushMatrix();
+    glColor3f(105.f / 255.f, 105.f / 255.f, 105.f / 255.f);
     glBegin(GL_QUADS); //Begin quadrilateral coordinates
     glVertex3f(position.x - width / 2.f, position.y, position.z + height / 2.f);
     glVertex3f(position.x - width / 2.f, position.y, position.z - height / 2.f);
     glVertex3f(position.x + width / 2.f, position.y, position.z - height / 2.f);
     glVertex3f(position.x + width / 2.f, position.y, position.z + height / 2.f);
     glEnd(); //End quadrilateral coordinates
+    glPopMatrix();
 }
