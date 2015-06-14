@@ -70,6 +70,12 @@ void BambooStick::render() {
         glTranslatef(position.x, position.y + getSegment(i)->height + height, position.z);
         glRotatef(90.f, 1.f, 0.f, 0.f);
         gluCylinder(qobj, getSegment(i)->topRadius, getSegment(i)->botRadius, getSegment(i)->height, 9, 1);
+       // glPushMatrix();
+        glBegin(GL_POLYGON);
+        for (double j = 0; j < 2 * 3.14159; j += 3.14159 / 9.0)
+            glVertex3f(cos(j) * getSegment(i)->topRadius, sin(j) * getSegment(i)->topRadius, 0.0);
+        glEnd();
+       // glPopMatrix();
         glPopMatrix();
 
         if (getSegment(i)->hasLeaf)

@@ -16,7 +16,8 @@ Camera::~Camera() {
 
 void Camera::computePos() {
     position.x += position.deltaMove * position.lx * 0.1f;
-    position.y += position.deltaMove * position.ly * 0.1f;
+    if (position.y + position.deltaMove * position.ly * 0.1f > 0.f)
+        position.y += position.deltaMove * position.ly * 0.1f;
     position.z += position.deltaMove * position.lz * 0.1f;
 }
 

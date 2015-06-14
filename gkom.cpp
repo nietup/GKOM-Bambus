@@ -60,14 +60,8 @@ void init() {
 
 void displayObjects() {
     glPushMatrix();
-    glPushMatrix();
     map->render();
     BambooStick::updateRotation();
-    glPopMatrix();
-    glPushMatrix();
-    glRasterPos2f(0.f, 0.5f);
-    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, '3');
-    glPopMatrix();
     glPopMatrix();
 }
 
