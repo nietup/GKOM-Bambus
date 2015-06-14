@@ -6,6 +6,8 @@ Camera::Camera() {
     position.y = 1.f;
     position.x = position.lx = position.angleVertical = position.ly = position.angle = position.deltaAngle = position.deltaAngleVertical = position.deltaMove = 0;
     position.lz = -10.f;
+    speed = 17.f;
+    rotationSpeed = 0.05f;
 }
 
 
@@ -59,10 +61,10 @@ void Camera::update(Action a, int key) {
     if (a == NORMAL_DOWN) {
         switch (key) {
             case 'w':
-                position.deltaMove = 2.f;
+                position.deltaMove = speed;
                 break;
             case 's':
-                position.deltaMove = -2.f;
+                position.deltaMove = -speed;
                 break;
         }
     }
@@ -77,16 +79,16 @@ void Camera::update(Action a, int key) {
     if (a == ARROW_DOWN) {
         switch (key) {
             case GLUT_KEY_LEFT:
-                position.deltaAngle = -0.02f;
+                position.deltaAngle = -rotationSpeed;
                 break;
             case GLUT_KEY_RIGHT:
-                position.deltaAngle = 0.02f;
+                position.deltaAngle = rotationSpeed;
                 break;
             case GLUT_KEY_UP:
-                position.deltaAngleVertical = 0.01f;
+                position.deltaAngleVertical = rotationSpeed;
                 break;
             case GLUT_KEY_DOWN:
-                position.deltaAngleVertical = -0.01f;
+                position.deltaAngleVertical = -rotationSpeed;
                 break;
         }
     }

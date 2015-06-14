@@ -36,6 +36,9 @@
     <ClCompile Include="Leaf.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Perlin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BambooStick.h">
@@ -54,6 +57,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Leaf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Perlin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

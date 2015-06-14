@@ -1,5 +1,6 @@
 #include "Map.h"
-
+#include "Perlin.h"
+#include <iostream>
 
 Map::Map(std::default_random_engine * generator) {
     entities = new std::vector<Entity *>();
@@ -7,16 +8,34 @@ Map::Map(std::default_random_engine * generator) {
     qobj = gluNewQuadric();
     Entity * e;
 
-    e = new Floor(-2.f, 0.f, -30.f, 100.f, 100.f);
+    width = 300.f;
+    height = 310.f;
+    e = new Floor(-2.f, 0.f, -150.f, width, height);
     entities->push_back(e);
 
-    for (int x = -5; x < 5; x++) {
-        for (int z = -8; z < 2; z++) {
-            if ((z + 8) % 2)
-                e = new BambooStick(qobj, generator, 10 * x + 5, 0, 10 * z);
-            else
-                e = new BambooStick(qobj, generator,  10 * x, 0, 10 * z);
+    unsigned int seed = rand() % 256;
+    Perlin perlin(seed);
+    double px, py, n;
+    double pz = (float)(rand() % 1000) / 1000.f;
 
+    for (int x = -15; x < 15; x++) {
+        for (int z = 0; z < 30; z++) {
+            px = (double)(x*10.f) / ((double)width);
+            py = (double)(z*10.f) / ((double)height);
+
+            n = 13 * perlin.noise(px, py, pz);
+            n = n - floor(n);
+
+            if (n >= 0.55) {
+
+                float hi = (float)(10 * x) + 5.f;
+                float lo = (float)(10 * x) - 4.5f;
+                float genX = lo + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (hi - lo)));
+                hi = (float)(10 * z) + 5.f;
+                lo = (float)(10 * z) - 4.5f;
+                float genZ = lo + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (hi - lo)));
+                e = new BambooStick(qobj, generator, genX, 0, -genZ);
+            }
             entities->push_back(e);
         }
     }

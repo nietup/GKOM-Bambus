@@ -84,6 +84,7 @@
     <ClCompile Include="gkom.cpp" />
     <ClCompile Include="Leaf.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="Perlin.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BambooStick.h" />
@@ -92,6 +93,7 @@
     <ClInclude Include="Floor.h" />
     <ClInclude Include="Leaf.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Perlin.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

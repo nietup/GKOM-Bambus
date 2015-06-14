@@ -8,6 +8,7 @@ class Map {
 private:
     std::vector<Entity *> * entities;
     GLUquadric * qobj;
+    float width, height;
 public:
     Map(std::default_random_engine * generator);
     ~Map();

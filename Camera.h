@@ -20,6 +20,8 @@ private:
         float deltaAngleVertical;
         float deltaMove;
     } position;
+
+    float speed, rotationSpeed;
 public:
     enum Action {NORMAL_UP, NORMAL_DOWN, ARROW_UP, ARROW_DOWN};
 
