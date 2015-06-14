@@ -1,6 +1,7 @@
 #pragma once
 #include "Entity.h"
 #include "Leaf.h"
+#include "Map.h"
 
 class BambooStick : public Entity{
 public:
@@ -17,6 +18,7 @@ public:
     ~BambooStick();
 
     void render();
+    static void updateRotation();
     Segment * getSegment(int x);
 
 private:
@@ -33,10 +35,9 @@ private:
     float width, height;
     GLUquadricObj *qobj;
     std::vector<Segment *> * segments;
-	Position dRotation, rotation;
+	static Position rotation;
 
     void generate(std::default_random_engine * generator);
-	void updateRotation();
     Segment * generateSegment(float y);                     //global height of segment
 };
 

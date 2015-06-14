@@ -1,9 +1,11 @@
 #include "BambooStick.h"
+#include <iostream>
 
-const int BambooStick::leafness = 3;
+const int BambooStick::leafness = 2;
 const float BambooStick::botTopFraction = 1.2f;
 const float BambooStick::botHeightFraction = 0.2f;
-const float BambooStick::maxRotation = 33.f;
+const float BambooStick::maxRotation = 10.f;
+Entity::Position BambooStick::rotation = {0,0,0};
 
 BambooStick::BambooStick() {
 }
@@ -12,8 +14,6 @@ BambooStick::BambooStick(GLUquadric * pQobj, std::default_random_engine * genera
     position.x = x;
     position.y = y;
     position.z = z;
-	rotation.x = rotation.z = 0;
-	dRotation.x = dRotation.z = 1.f;
     qobj = pQobj;
     segments = new std::vector<Segment *>();
 
@@ -26,23 +26,34 @@ BambooStick::~BambooStick() {
 }
 
 void BambooStick::updateRotation() {
+    if (abs(BambooStick::rotation.x + Map::windX) <= maxRotation)
+        BambooStick::rotation.x += Map::windX;
 
-	rotation.x += dRotation.x;
-	rotation.z += dRotation.z;
-	if (rotation.x >= maxRotation)
-		rotation.x = maxRotation;
-	if (rotation.z >= maxRotation)
-		rotation.z = maxRotation;
+    if (abs(BambooStick::rotation.z + Map::windZ) <= maxRotation)
+        BambooStick::rotation.z += Map::windZ;
+
+    if (abs(BambooStick::rotation.x) > 0.031f) {
+        if (BambooStick::rotation.x >= 0.f)
+            BambooStick::rotation.x -= 0.03;
+        else
+            BambooStick::rotation.x += 0.03;
+    }
+
+    if (abs(BambooStick::rotation.z) > 0.031f) {
+        if (BambooStick::rotation.z >= 0.f)
+            BambooStick::rotation.z -= 0.03;
+        else
+            BambooStick::rotation.z += 0.03;
+    }
 }
 
 void BambooStick::render() {
-	updateRotation();
-	glPushMatrix();
+    glPushMatrix();
 
-	glTranslatef(position.x, position.y, position.z);
-	glRotatef(maxRotation*sin((rotation.z / maxRotation)*1.570796), 0, 0, 1);
-	glRotatef(maxRotation*sin((rotation.x / maxRotation)*1.570796), 1, 0, 0);
-	glTranslatef(-position.x, -position.y, -position.z);
+    glTranslatef(position.x, position.y, position.z);
+    glRotatef(maxRotation*sin((BambooStick::rotation.z / maxRotation)*1.570796), 0, 0, 1);
+    glRotatef(maxRotation*sin((BambooStick::rotation.x / maxRotation)*1.570796), 1, 0, 0);
+    glTranslatef(-position.x, -position.y, -position.z);
     float height = 0;
     for (int i = 0; i < segments->size(); i++) {
         glPushMatrix();
@@ -58,7 +69,7 @@ void BambooStick::render() {
 
         height += getSegment(i)->height;
     }
-	glPopMatrix();
+    glPopMatrix();
 }
 
 void BambooStick::generate(std::default_random_engine * generator) {

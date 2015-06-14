@@ -2,8 +2,8 @@
 
 
 Camera::Camera() {
-    position.z = 10.f;
-    position.y = 1.f;
+    position.z = -90.f;
+    position.y = 100.f;
     position.x = position.lx = position.angleVertical = position.ly = position.angle = position.deltaAngle = position.deltaAngleVertical = position.deltaMove = 0;
     position.lz = -10.f;
     speed = 17.f;

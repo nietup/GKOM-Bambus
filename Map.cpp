@@ -2,6 +2,8 @@
 #include "Perlin.h"
 #include <iostream>
 
+float Map::windX = 0.025f, Map::windZ = 0.5f;
+
 Map::Map(std::default_random_engine * generator) {
     entities = new std::vector<Entity *>();
 
@@ -34,7 +36,7 @@ Map::Map(std::default_random_engine * generator) {
                 hi = (float)(10 * z) + 5.f;
                 lo = (float)(10 * z) - 4.5f;
                 float genZ = lo + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (hi - lo)));
-                e = new BambooStick(qobj, generator, genX, 0, -genZ);
+                e = new BambooStick(qobj, generator, genX, -0.3f, -genZ);
             }
             entities->push_back(e);
         }
@@ -45,7 +47,34 @@ Map::Map(std::default_random_engine * generator) {
 Map::~Map() {
 }
 
+void Map::updateWind() {
+    if (!(rand() % 100)) {
+        if (!(rand() % 2))
+            Map::windX += 0.01f;
+        else
+            Map::windX -= 0.01f;
+    }
+
+    if (!(rand() % 100)) {
+        if (!(rand() % 2))
+            Map::windZ += 0.01f;
+        else
+            Map::windZ -= 0.01f;
+    }
+
+    if (!(rand() % 3000)) {
+        Map::windX = -Map::windX;
+    }
+
+    if (!(rand() % 10000)) {
+        Map::windZ = -Map::windZ;
+    }
+}
+
 void Map::render() {
+
+    updateWind();
+
     for (int i = 0; i < entities->size(); i++)
         (*entities)[i]->render();
 }

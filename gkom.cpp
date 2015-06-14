@@ -62,6 +62,7 @@ void displayObjects() {
     glPushMatrix();
 
     map->render();
+    BambooStick::updateRotation();
 
     glPopMatrix();
 }
