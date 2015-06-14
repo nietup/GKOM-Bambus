@@ -2,7 +2,7 @@
 #include "Perlin.h"
 #include <iostream>
 
-float Map::windX = 0.025f, Map::windZ = 0.5f;
+float Map::windX = 0.0f, Map::windZ = 0.025f;
 
 Map::Map(std::default_random_engine * generator) {
     entities = new std::vector<Entity *>();
@@ -48,33 +48,14 @@ Map::~Map() {
 }
 
 void Map::updateWind() {
-    if (!(rand() % 100)) {
-        if (!(rand() % 2))
-            Map::windX += 0.01f;
+        if (abs(Map::windX) <  FLT_EPSILON)
+            Map::windX = 0.025f;
         else
-            Map::windX -= 0.01f;
-    }
-
-    if (!(rand() % 100)) {
-        if (!(rand() % 2))
-            Map::windZ += 0.01f;
-        else
-            Map::windZ -= 0.01f;
-    }
-
-    if (!(rand() % 3000)) {
-        Map::windX = -Map::windX;
-    }
-
-    if (!(rand() % 10000)) {
-        Map::windZ = -Map::windZ;
-    }
+            Map::windX = 0.f;
+        std::cout << "x: " << Map::windX << " z: " << Map::windZ << std::endl;
 }
 
 void Map::render() {
-
-    updateWind();
-
     for (int i = 0; i < entities->size(); i++)
         (*entities)[i]->render();
 }

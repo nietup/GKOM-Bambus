@@ -32,9 +32,9 @@ void init() {
 
     //ambient diffuse speculear shineieesss
     //0.25	0.25	0.25	0.4	0.4	0.4	0.774597	0.774597	0.774597	0.6
-    GLfloat mat_ambient[] = {0.25	,0.25	,0.25, 1.0};
+    GLfloat mat_ambient[] = {0.25, 0.25, 0.25, 1.0};
     GLfloat mat_diffuse[] = {0.4, 0.4, 0.4, 1.0};
-    GLfloat mat_specular[] = {0.774597,	0.774597,	0.774597, 1.0};
+    GLfloat mat_specular[] = {0.774597, 0.774597, 0.774597, 1.0};
     GLfloat shiniess = 0.6;
 
     glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
@@ -60,10 +60,14 @@ void init() {
 
 void displayObjects() {
     glPushMatrix();
-
+    glPushMatrix();
     map->render();
     BambooStick::updateRotation();
-
+    glPopMatrix();
+    glPushMatrix();
+    glRasterPos2f(0.f, 0.5f);
+    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, '3');
+    glPopMatrix();
     glPopMatrix();
 }
 
@@ -102,7 +106,10 @@ void pressNormalKey(unsigned char key, int x, int y) {
     if (key == 27)              //escape
         exit(0);
 
-    camera->update(Camera::NORMAL_DOWN, key);
+    if (key == 'q')
+        Map::updateWind();
+    else
+        camera->update(Camera::NORMAL_DOWN, key);
 }
 
 void releaseNormalKey(unsigned char key, int x, int y) {

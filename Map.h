@@ -10,13 +10,13 @@ private:
     GLUquadric * qobj;
     float width, height;
 
-    void updateWind();
 public:
     Map(std::default_random_engine * generator);
     ~Map();
 
     static float windX, windZ;
 
+    static void updateWind();
     void render();
 };
 

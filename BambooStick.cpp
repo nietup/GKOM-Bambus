@@ -4,8 +4,8 @@
 const int BambooStick::leafness = 2;
 const float BambooStick::botTopFraction = 1.2f;
 const float BambooStick::botHeightFraction = 0.2f;
-const float BambooStick::maxRotation = 10.f;
-Entity::Position BambooStick::rotation = {0,0,0};
+const float BambooStick::maxRotation = 6.f;
+Entity::Position BambooStick::rotation = {0, 0, 0};
 
 BambooStick::BambooStick() {
 }
@@ -28,22 +28,30 @@ BambooStick::~BambooStick() {
 void BambooStick::updateRotation() {
     if (abs(BambooStick::rotation.x + Map::windX) <= maxRotation)
         BambooStick::rotation.x += Map::windX;
+    else
+        Map::updateWind();
+
 
     if (abs(BambooStick::rotation.z + Map::windZ) <= maxRotation)
         BambooStick::rotation.z += Map::windZ;
 
-    if (abs(BambooStick::rotation.x) > 0.031f) {
-        if (BambooStick::rotation.x >= 0.f)
-            BambooStick::rotation.x -= 0.03;
-        else
-            BambooStick::rotation.x += 0.03;
+    if (abs(Map::windX) < FLT_EPSILON) {
+        if (BambooStick::rotation.x >= 0.025) {
+            BambooStick::rotation.x -= 0.02;
+        }
+        else {
+            if (BambooStick::rotation.x <= -0.025)
+                BambooStick::rotation.x += 0.02;
+            else
+                Map::updateWind();
+        }
     }
 
-    if (abs(BambooStick::rotation.z) > 0.031f) {
-        if (BambooStick::rotation.z >= 0.f)
-            BambooStick::rotation.z -= 0.03;
-        else
-            BambooStick::rotation.z += 0.03;
+    if (abs(Map::windZ) < FLT_EPSILON) {
+        if (BambooStick::rotation.z >= 0.025)
+            BambooStick::rotation.z -= 0.02;
+        else if(BambooStick::rotation.z <= -0.025)
+            BambooStick::rotation.z += 0.02;
     }
 }
 
@@ -80,7 +88,7 @@ void BambooStick::generate(std::default_random_engine * generator) {
         baseSegmentHeight = 1.f;
 
     int segmentsNo;
-    std::normal_distribution<float> segmentsDistribution(2.0, 0.75);
+    std::normal_distribution<float> segmentsDistribution(5.0, 1.0);
 
     float number = segmentsDistribution(*generator);
 
