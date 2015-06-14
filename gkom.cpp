@@ -28,10 +28,8 @@ void init() {
     //GLfloat mat_ambient[] = {1.0, 1.0, 1.0, 1.0};			//mat - wspolczynniki odbicia
     //GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
     GLfloat lm_ambient[] = {0.2, 0.2, 0.2, 1.0};			//swiatlo rozproszone
-    GLfloat light_position[] = {0.0, 10.0, 10.0, 1.0};
+    GLfloat light_position[] = {0.0, 0.0, 10.0, 1.0};
 
-    //ambient diffuse speculear shineieesss
-    //0.25	0.25	0.25	0.4	0.4	0.4	0.774597	0.774597	0.774597	0.6
     GLfloat mat_ambient[] = {0.25, 0.25, 0.25, 1.0};
     GLfloat mat_diffuse[] = {0.4, 0.4, 0.4, 1.0};
     GLfloat mat_specular[] = {0.774597, 0.774597, 0.774597, 1.0};
