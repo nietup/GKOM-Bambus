@@ -123,8 +123,8 @@ int main(int argc, char** argv) {
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);      //pojedyncze buforowanie - single, double; depth - zbufor
 
     glutInitWindowPosition(0, 0);
-    width = 1500;
-    height = 800;
+    width = 1400;
+    height = 700;
     glutInitWindowSize(width, height);
 
     glutCreateWindow("GKOM: Bamboo Ulimate Elite");
