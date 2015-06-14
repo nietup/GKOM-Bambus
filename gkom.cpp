@@ -25,14 +25,22 @@ std::default_random_engine * generator;
 void init() {
     srand(time(NULL));
 
-    GLfloat mat_ambient[] = {1.0, 1.0, 1.0, 1.0};			//mat - wspolczynniki odbicia
-    GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
-    GLfloat light_position[] = {0.0, 0.0, 10.0, 1.0};
+    //GLfloat mat_ambient[] = {1.0, 1.0, 1.0, 1.0};			//mat - wspolczynniki odbicia
+    //GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
     GLfloat lm_ambient[] = {0.2, 0.2, 0.2, 1.0};			//swiatlo rozproszone
+    GLfloat light_position[] = {0.0, 10.0, 10.0, 1.0};
+
+    //ambient diffuse speculear shineieesss
+    //0.25	0.25	0.25	0.4	0.4	0.4	0.774597	0.774597	0.774597	0.6
+    GLfloat mat_ambient[] = {0.25	,0.25	,0.25, 1.0};
+    GLfloat mat_diffuse[] = {0.4, 0.4, 0.4, 1.0};
+    GLfloat mat_specular[] = {0.774597,	0.774597,	0.774597, 1.0};
+    GLfloat shiniess = 0.6;
 
     glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-    glMaterialf(GL_FRONT, GL_SHININESS, 50.0);
+    glMaterialf(GL_FRONT, GL_SHININESS, 128.0 * shiniess);
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lm_ambient);
 
@@ -115,9 +123,9 @@ int main(int argc, char** argv) {
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);      //pojedyncze buforowanie - single, double; depth - zbufor
 
     glutInitWindowPosition(0, 0);
-    width = 1024;
-    height = 512;
-    glutInitWindowSize(1024, 512);
+    width = 1500;
+    height = 800;
+    glutInitWindowSize(width, height);
 
     glutCreateWindow("GKOM: Bamboo Ulimate Elite");
 

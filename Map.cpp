@@ -8,7 +8,7 @@ Map::Map(std::default_random_engine * generator) {
     qobj = gluNewQuadric();
     Entity * e;
 
-    width = 300.f;
+    width = 310.f;
     height = 310.f;
     e = new Floor(-2.f, 0.f, -150.f, width, height);
     entities->push_back(e);
